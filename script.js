@@ -168,6 +168,18 @@ stopButton.addEventListener("click", function() {
 });
 
 
+// タイマーをタップして開始・停止
+timer.addEventListener("click", function() {
+
+    if (isRunning) {
+        stopButton.click();
+    } else {
+        startButton.click();
+    }
+
+});
+
+
 // 保存
 saveButton.addEventListener("click", function() {
 
