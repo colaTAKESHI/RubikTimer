@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Rubik Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Rubik Timer</h1>
+
+    <div id="timer">0.00</div>
+
+    <button id="startButton">開始</button>
+    <button id="stopButton">停止</button>
+    <button id="resetButton">リセット</button>
+
+
+    <div id="resultArea">
+
+        <p id="resultText"></p>
+
+        <button id="saveButton">保存</button>
+        <button id="discardButton">削除</button>
+
+    </div>
+
+
+    <h2>今日のTOP5</h2>
+
+    <ul id="todayRecordList"></ul>
+
+
+    <h2>全期間のTOP5</h2>
+
+    <ul id="allRecordList"></ul>
+
+
+    <h2>過去の記録</h2>
+
+    <div id="calendar">
+
+        <button id="previousMonthButton">← 前の月</button>
+        <button id="currentMonthButton">今月</button>
+        <button id="nextMonthButton">次の月 →</button>
+
+        <div id="calendarBody"></div>
+
+    </div>
+
+    <ul id="pastRecordList"></ul>
+
+
+    <button id="deleteAllButton">テスト記録を全部削除</button>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
