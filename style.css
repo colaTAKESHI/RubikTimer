@@ -20,7 +20,7 @@ h2 {
     font-size: 90px;
     font-weight: bold;
     margin: 20px auto;
-    padding: 60px 10px;
+    padding: 100px 20px;
     cursor: pointer;
     user-select: none;
 }
@@ -102,6 +102,46 @@ button {
 }
 
 
+/* タイマー専用画面 */
+#timerScreen {
+    display: none;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: white;
+
+    z-index: 1000;
+
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    touch-action: none;
+    user-select: none;
+}
+
+#timerScreen.active {
+    display: flex;
+}
+
+
+#timerScreenDisplay {
+    font-size: 100px;
+    font-weight: bold;
+}
+
+
+#timerInstruction {
+    font-size: 20px;
+    margin-top: 30px;
+}
+
+
 /* スマホ用 */
 @media (max-width: 600px) {
 
@@ -130,6 +170,15 @@ button {
 
     .calendar-day {
         padding: 12px 2px;
+    }
+
+
+    #timerScreenDisplay {
+        font-size: 80px;
+    }
+
+    #timerInstruction {
+        font-size: 18px;
     }
 
 }
