@@ -58,6 +58,66 @@ function updateTimer() {
 }
 
 
+// 記録削除ボタンを作る
+function createDeleteButton(recordData) {
+
+    const deleteButton = document.createElement("button");
+
+    deleteButton.textContent = "削除";
+
+    deleteButton.addEventListener("click", function() {
+
+        const answer = confirm(
+            recordData.time.toFixed(2) +
+            "秒の記録を削除しますか？"
+        );
+
+        if (answer === false) {
+            return;
+        }
+
+
+        // 削除する記録を探す
+        const index = records.indexOf(recordData);
+
+        if (index === -1) {
+            return;
+        }
+
+
+        // recordsから記録そのものを削除
+        records.splice(index, 1);
+
+
+        // localStorageを更新
+        localStorage.setItem(
+            "recordsV2",
+            JSON.stringify(records)
+        );
+
+
+        // すべての表示を更新
+        displayTop5();
+        displayCalendar();
+
+
+        // 現在表示している過去の日付の記録も更新
+        const title = pastRecordList.querySelector("h3");
+
+        if (title) {
+
+            const selectedDate =
+                title.textContent.replace(" のTOP5", "");
+
+            displayPastTop5(selectedDate);
+        }
+
+    });
+
+    return deleteButton;
+}
+
+
 // TOP5を表示する
 function displayTop5() {
 
@@ -89,7 +149,12 @@ function displayTop5() {
         record.textContent =
             (index + 1) + "位　" +
             recordData.time.toFixed(2) + "秒　" +
-            recordData.clockTime;
+            recordData.clockTime + "　";
+
+        const deleteButton =
+            createDeleteButton(recordData);
+
+        record.appendChild(deleteButton);
 
         todayRecordList.appendChild(record);
     });
@@ -111,7 +176,12 @@ function displayTop5() {
         record.textContent =
             (index + 1) + "位　" +
             recordData.time.toFixed(2) + "秒　" +
-            recordData.date;
+            recordData.date + "　";
+
+        const deleteButton =
+            createDeleteButton(recordData);
+
+        record.appendChild(deleteButton);
 
         allRecordList.appendChild(record);
     });
@@ -174,6 +244,7 @@ timerScreen.addEventListener("pointerdown", function(event) {
 timerScreen.addEventListener("pointerup", function(event) {
 
     event.preventDefault();
+
 
     // 計測中ならストップ
     if (isRunning) {
@@ -374,7 +445,12 @@ function displayPastTop5(selectedDate) {
             (index + 1) + "位　" +
             recordData.time.toFixed(2) +
             "秒　" +
-            recordData.clockTime;
+            recordData.clockTime + "　";
+
+        const deleteButton =
+            createDeleteButton(recordData);
+
+        record.appendChild(deleteButton);
 
         pastRecordList.appendChild(record);
     });
