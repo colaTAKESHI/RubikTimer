@@ -21,11 +21,19 @@ const previousMonthButton = document.getElementById("previousMonthButton");
 const currentMonthButton = document.getElementById("currentMonthButton");
 const nextMonthButton = document.getElementById("nextMonthButton");
 
+const timerScreen = document.getElementById("timerScreen");
+const timerScreenDisplay = document.getElementById("timerScreenDisplay");
+const timerInstruction = document.getElementById("timerInstruction");
+
 let isRunning = false;
 
 
 // 保存するかまだ決まっていない記録
 let pendingRecord = null;
+
+
+// タイマー専用画面で指を置いているか
+let isHolding = false;
 
 
 // カレンダーで表示する年月
@@ -37,12 +45,16 @@ let calendarMonth = today.getMonth();
 
 // タイマーを更新する
 function updateTimer() {
+
     const now = Date.now();
     const elapsed = now - startTime;
 
     const seconds = elapsed / 1000;
 
-    timer.textContent = seconds.toFixed(2);
+    const timeText = seconds.toFixed(2);
+
+    timer.textContent = timeText;
+    timerScreenDisplay.textContent = timeText;
 }
 
 
@@ -106,7 +118,30 @@ function displayTop5() {
 }
 
 
-// スタート
+// タイマー専用画面を開く
+function openTimerScreen() {
+
+    timerScreen.classList.add("active");
+
+    timerScreenDisplay.textContent = "0.00";
+
+    timerInstruction.textContent =
+        "指を置いて、離してください";
+
+    isHolding = false;
+}
+
+
+// タイマー専用画面を閉じる
+function closeTimerScreen() {
+
+    timerScreen.classList.remove("active");
+
+    isHolding = false;
+}
+
+
+// 開始ボタン
 startButton.addEventListener("click", function() {
 
     if (isRunning) {
@@ -115,16 +150,75 @@ startButton.addEventListener("click", function() {
 
     resultArea.style.display = "none";
 
+    openTimerScreen();
+});
+
+
+// タイマー専用画面で指を置く
+timerScreen.addEventListener("pointerdown", function(event) {
+
+    event.preventDefault();
+
+    if (isRunning) {
+        return;
+    }
+
+    isHolding = true;
+
+    timerInstruction.textContent =
+        "指を離すとスタート";
+});
+
+
+// タイマー専用画面で指を離す
+timerScreen.addEventListener("pointerup", function(event) {
+
+    event.preventDefault();
+
+    // 計測中ならストップ
+    if (isRunning) {
+
+        stopTimer();
+
+        return;
+    }
+
+
+    // 指を置いていなかった場合は何もしない
+    if (isHolding === false) {
+        return;
+    }
+
+    isHolding = false;
+
+
+    // 指を離した瞬間から計測開始
     startTime = Date.now();
 
     timerId = setInterval(updateTimer, 10);
 
     isRunning = true;
+
+    timerInstruction.textContent =
+        "タップするとストップ";
 });
 
 
-// ストップ
-stopButton.addEventListener("click", function() {
+// 画面外で指を離した場合
+timerScreen.addEventListener("pointercancel", function() {
+
+    isHolding = false;
+
+    if (isRunning === false) {
+
+        timerInstruction.textContent =
+            "指を置いて、離してください";
+    }
+});
+
+
+// ストップ処理
+function stopTimer() {
 
     if (!isRunning) {
         return;
@@ -164,18 +258,16 @@ stopButton.addEventListener("click", function() {
     resultText.textContent =
         time.toFixed(2) + "秒";
 
+    closeTimerScreen();
+
     resultArea.style.display = "block";
-});
+}
 
 
-// タイマーをタップして開始・停止
-timer.addEventListener("click", function() {
+// 停止ボタン
+stopButton.addEventListener("click", function() {
 
-    if (isRunning) {
-        stopButton.click();
-    } else {
-        startButton.click();
-    }
+    stopTimer();
 
 });
 
@@ -221,9 +313,14 @@ resetButton.addEventListener("click", function() {
 
     pendingRecord = null;
 
+    isHolding = false;
+
+    closeTimerScreen();
+
     resultArea.style.display = "none";
 
     timer.textContent = "0.00";
+    timerScreenDisplay.textContent = "0.00";
 });
 
 
@@ -237,7 +334,7 @@ document.addEventListener("keydown", function(event) {
         if (isRunning === false) {
             startButton.click();
         } else {
-            stopButton.click();
+            stopTimer();
         }
     }
 });
