@@ -24,6 +24,15 @@ const timerScreen = document.getElementById("timerScreen");
 const timerScreenDisplay = document.getElementById("timerScreenDisplay");
 const timerInstruction = document.getElementById("timerInstruction");
 
+const timerResultButtons =
+    document.getElementById("timerResultButtons");
+
+const timerSaveButton =
+    document.getElementById("timerSaveButton");
+
+const timerDiscardButton =
+    document.getElementById("timerDiscardButton");
+
 let isRunning = false;
 
 
@@ -197,6 +206,8 @@ function openTimerScreen() {
     timerInstruction.textContent =
         "指を置いて、離してください";
 
+    timerResultButtons.style.display = "none";
+
     isHolding = false;
 }
 
@@ -207,6 +218,8 @@ function closeTimerScreen() {
     timerScreen.classList.remove("active");
 
     isHolding = false;
+
+    timerResultButtons.style.display = "none";
 }
 
 
@@ -228,6 +241,14 @@ timerScreen.addEventListener("pointerdown", function(event) {
 
     event.preventDefault();
 
+
+    // 保存・削除ボタン表示中は
+    // タイマー操作をしない
+    if (timerResultButtons.style.display !== "none") {
+        return;
+    }
+
+
     if (isRunning) {
         return;
     }
@@ -243,6 +264,13 @@ timerScreen.addEventListener("pointerdown", function(event) {
 timerScreen.addEventListener("pointerup", function(event) {
 
     event.preventDefault();
+
+
+    // 保存・削除ボタン表示中は
+    // タイマー操作をしない
+    if (timerResultButtons.style.display !== "none") {
+        return;
+    }
 
 
     // 計測中ならストップ
@@ -325,12 +353,19 @@ function stopTimer() {
 
     isRunning = false;
 
-    resultText.textContent =
-        time.toFixed(2) + "秒";
 
-    closeTimerScreen();
+    // 停止した時間を表示
+    const timeText = time.toFixed(2);
 
-    resultArea.style.display = "block";
+    timer.textContent = timeText;
+    timerScreenDisplay.textContent = timeText;
+
+
+    // 保存・削除ボタンを表示
+    timerInstruction.textContent =
+        "この記録を保存しますか？";
+
+    timerResultButtons.style.display = "block";
 }
 
 
@@ -342,8 +377,28 @@ stopButton.addEventListener("click", function() {
 });
 
 
-// 保存
-saveButton.addEventListener("click", function() {
+// タイマー画面の保存ボタン
+timerSaveButton.addEventListener("click", function(event) {
+
+    event.stopPropagation();
+
+    savePendingRecord();
+
+});
+
+
+// タイマー画面の削除ボタン
+timerDiscardButton.addEventListener("click", function(event) {
+
+    event.stopPropagation();
+
+    discardPendingRecord();
+
+});
+
+
+// 記録を保存する処理
+function savePendingRecord() {
 
     if (pendingRecord === null) {
         return;
@@ -360,17 +415,37 @@ saveButton.addEventListener("click", function() {
 
     resultArea.style.display = "none";
 
+    closeTimerScreen();
+
     displayTop5();
     displayCalendar();
-});
+}
 
 
-// 保存前の記録を削除
-discardButton.addEventListener("click", function() {
+// 保存前の記録を削除する処理
+function discardPendingRecord() {
 
     pendingRecord = null;
 
     resultArea.style.display = "none";
+
+    closeTimerScreen();
+}
+
+
+// 通常画面の保存ボタン
+saveButton.addEventListener("click", function() {
+
+    savePendingRecord();
+
+});
+
+
+// 通常画面の削除ボタン
+discardButton.addEventListener("click", function() {
+
+    discardPendingRecord();
+
 });
 
 
@@ -609,6 +684,10 @@ nextMonthButton.addEventListener("click", function() {
 
     displayCalendar();
 });
+
+
+// カレンダーを表示
+displayCalendar();
 
 
 // カレンダーを表示
