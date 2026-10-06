@@ -49,6 +49,16 @@ button {
 }
 
 
+/* ランキング内の削除ボタン */
+#todayRecordList li button,
+#allRecordList li button,
+#pastRecordList li button {
+    font-size: 14px;
+    padding: 4px 8px;
+    margin: 0 0 0 4px;
+}
+
+
 /* 過去の記録 */
 #pastRecordList {
     list-style: none;
@@ -180,5 +190,7 @@ button {
     #timerInstruction {
         font-size: 18px;
     }
+
+}
 
 }
