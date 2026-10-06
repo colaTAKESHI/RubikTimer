@@ -16,7 +16,6 @@ const todayRecordList = document.getElementById("todayRecordList");
 const allRecordList = document.getElementById("allRecordList");
 const pastRecordList = document.getElementById("pastRecordList");
 const calendar = document.getElementById("calendar");
-const deleteAllButton = document.getElementById("deleteAllButton");
 const previousMonthButton = document.getElementById("previousMonthButton");
 const currentMonthButton = document.getElementById("currentMonthButton");
 const nextMonthButton = document.getElementById("nextMonthButton");
@@ -366,7 +365,7 @@ saveButton.addEventListener("click", function() {
 });
 
 
-// 削除
+// 保存前の記録を削除
 discardButton.addEventListener("click", function() {
 
     pendingRecord = null;
@@ -614,25 +613,3 @@ nextMonthButton.addEventListener("click", function() {
 
 // カレンダーを表示
 displayCalendar();
-
-
-// 全記録を削除する
-deleteAllButton.addEventListener("click", function() {
-
-    const answer = confirm(
-        "本当にすべての記録を削除しますか？"
-    );
-
-    if (answer === false) {
-        return;
-    }
-
-    records = [];
-
-    localStorage.removeItem("recordsV2");
-
-    displayTop5();
-    displayCalendar();
-
-    pastRecordList.innerHTML = "";
-});
